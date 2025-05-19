@@ -6,6 +6,7 @@ import (
 	"syscall"
 
 	"github.com/YurcheuskiRadzivon/telemetrics-back/config"
+	"github.com/YurcheuskiRadzivon/telemetrics-back/internal/adapters/http"
 	"github.com/YurcheuskiRadzivon/telemetrics-back/pkg/httpserver"
 	"github.com/YurcheuskiRadzivon/telemetrics-back/pkg/logger"
 )
@@ -15,6 +16,8 @@ func Run(cfg *config.Config) {
 	lgr.InfoLogger.Println(cfg.App.Name)
 
 	httpServer := httpserver.New(httpserver.Port(cfg.HTTP.Port), httpserver.Prefork(cfg.HTTP.UsePreforkMode))
+	http.NewRouter(httpServer.App, cfg, lgr)
+
 	httpServer.Start()
 
 	interrupt := make(chan os.Signal, 1)
@@ -22,14 +25,14 @@ func Run(cfg *config.Config) {
 
 	select {
 	case s := <-interrupt:
-		lgr.InfoLogger.Printf("app -Run - signal: %s", s.String())
+		lgr.InfoLogger.Printf("app - Run - signal: %s", s.String())
 	case err := <-httpServer.Notify():
-		lgr.ErrorLogger.Printf("app -Run - httpServer.Notify: %w", err)
+		lgr.ErrorLogger.Printf("app - Run - httpServer.Notify: %w", err)
 	}
 
 	err := httpServer.Shutdown()
 	if err != nil {
-		lgr.ErrorLogger.Printf("app -Run - httpServer.Shutdown: %w", err)
+		lgr.ErrorLogger.Printf("app - Run - httpServer.Shutdown: %w", err)
 	}
 
 }

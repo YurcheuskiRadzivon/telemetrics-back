@@ -12,8 +12,8 @@ type Logger struct {
 
 func NewLogger() *Logger {
 	return &Logger{
-		InfoLogger:  log.New(log.Writer(), "INFO: ", log.Ldate|log.Ltime|log.Lshortfile),
-		DebugLogger: log.New(log.Writer(), "DEBUG: ", log.Ldate|log.Ltime|log.Lshortfile),
-		ErrorLogger: log.New(log.Writer(), "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile),
+		InfoLogger:  log.New(log.Writer(), "INFO: ", log.Ldate|log.Ltime /*|log.Lshortfile*/),
+		DebugLogger: log.New(log.Writer(), "DEBUG: ", log.Ldate|log.Ltime /*|log.Lshortfile*/),
+		ErrorLogger: log.New(log.Writer(), "ERROR: ", log.Ldate|log.Ltime /*|log.Lshortfile*/),
 	}
 }
