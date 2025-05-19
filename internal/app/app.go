@@ -1,18 +1,18 @@
 package app
 
 import (
-	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/YurcheuskiRadzivon/telemetrics-back/config"
 	"github.com/YurcheuskiRadzivon/telemetrics-back/pkg/httpserver"
+	"github.com/YurcheuskiRadzivon/telemetrics-back/pkg/logger"
 )
 
 func Run(cfg *config.Config) {
-	fmt.Println(cfg.App.Name)
+	lgr := logger.NewLogger()
+	lgr.InfoLogger.Println(cfg.App.Name)
 
 	httpServer := httpserver.New(httpserver.Port(cfg.HTTP.Port), httpserver.Prefork(cfg.HTTP.UsePreforkMode))
 	httpServer.Start()
@@ -22,14 +22,14 @@ func Run(cfg *config.Config) {
 
 	select {
 	case s := <-interrupt:
-		log.Printf("app -Run - signal: %s", s.String())
+		lgr.InfoLogger.Printf("app -Run - signal: %s", s.String())
 	case err := <-httpServer.Notify():
-		log.Printf("app -Run - httpServer.Notify: %w", err)
+		lgr.ErrorLogger.Printf("app -Run - httpServer.Notify: %w", err)
 	}
 
 	err := httpServer.Shutdown()
 	if err != nil {
-		log.Printf("app -Run - httpServer.Shutdown: %w", err)
+		lgr.ErrorLogger.Printf("app -Run - httpServer.Shutdown: %w", err)
 	}
 
 }
