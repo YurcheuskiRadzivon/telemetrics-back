@@ -1,7 +1,7 @@
 package entity
 
 type User struct {
-	ID          int
+	UserID      int
 	Username    string
 	PhoneNumber string
 	Session     []byte
