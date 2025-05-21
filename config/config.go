@@ -8,10 +8,11 @@ import (
 type (
 	// Config -.
 	Config struct {
-		App  App
-		HTTP HTTP
-		DB   DB
-		TG   TG
+		App   App
+		HTTP  HTTP
+		PG    PG
+		REDIS REDIS
+		TG    TG
 	}
 
 	// App -.
@@ -27,8 +28,13 @@ type (
 	}
 
 	// DB -.
-	DB struct {
-		URL string `env:"DB_URL,required"`
+	PG struct {
+		URL string `env:"PG_URL,required"`
+	}
+
+	// REDIS
+	REDIS struct {
+		URL string `env:"REDIS_URL,required"`
 	}
 
 	//TG

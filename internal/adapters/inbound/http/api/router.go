@@ -1,8 +1,8 @@
 package api
 
 import (
-	"github.com/YurcheuskiRadzivon/telemetrics-back/internal/adapters/http/api/auth"
-	"github.com/YurcheuskiRadzivon/telemetrics-back/internal/adapters/http/api/manage"
+	"github.com/YurcheuskiRadzivon/telemetrics-back/internal/adapters/inbound/http/api/auth"
+	"github.com/YurcheuskiRadzivon/telemetrics-back/internal/adapters/inbound/http/api/manage"
 	"github.com/YurcheuskiRadzivon/telemetrics-back/pkg/logger"
 	"github.com/gofiber/fiber/v2"
 )

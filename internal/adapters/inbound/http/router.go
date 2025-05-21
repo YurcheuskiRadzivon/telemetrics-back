@@ -2,8 +2,8 @@ package http
 
 import (
 	"github.com/YurcheuskiRadzivon/telemetrics-back/config"
-	"github.com/YurcheuskiRadzivon/telemetrics-back/internal/adapters/http/api"
-	"github.com/YurcheuskiRadzivon/telemetrics-back/internal/adapters/http/middleware"
+	"github.com/YurcheuskiRadzivon/telemetrics-back/internal/adapters/inbound/http/api"
+	"github.com/YurcheuskiRadzivon/telemetrics-back/internal/adapters/inbound/http/middleware"
 	"github.com/YurcheuskiRadzivon/telemetrics-back/pkg/logger"
 	"github.com/gofiber/fiber/v2"
 )

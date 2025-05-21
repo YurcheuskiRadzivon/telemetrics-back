@@ -1,7 +1,7 @@
 package entity
 
 type Session struct {
-	PhoneNumber   string
-	PhoneCodeHash string
-	Status        string
+	PhoneNumber   string `json:"phone_number"`
+	PhoneCodeHash string `json:"phone_code_hash"`
+	Status        string `json:"status"`
 }
