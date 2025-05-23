@@ -39,8 +39,8 @@ type (
 
 	//TG
 	TG struct {
-		API_ID   int    `env:"API_ID,required"`
-		API_HASH string `env:"API_HASH,required"`
+		APP_ID   int    `env:"APP_ID,required"`
+		APP_HASH string `env:"APP_HASH,required"`
 	}
 )
 

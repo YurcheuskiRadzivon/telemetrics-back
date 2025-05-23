@@ -1,11 +1,15 @@
 package auth
 
 import (
+	"github.com/YurcheuskiRadzivon/telemetrics-back/config"
+	sm "github.com/YurcheuskiRadzivon/telemetrics-back/internal/infrastructure/session-manager"
+	"github.com/YurcheuskiRadzivon/telemetrics-back/pkg/generator"
 	"github.com/YurcheuskiRadzivon/telemetrics-back/pkg/logger"
-	"github.com/go-playground/validator/v10"
 )
 
 type Auth struct {
-	vldtr *validator.Validate
-	lgr   *logger.Logger
+	gnrt *generator.Generator
+	sm   *sm.SessionManager
+	cfg  *config.Config
+	lgr  *logger.Logger
 }

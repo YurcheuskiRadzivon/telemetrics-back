@@ -1,15 +1,13 @@
 package app
 
 import (
-	"context"
-	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/YurcheuskiRadzivon/telemetrics-back/config"
 	"github.com/YurcheuskiRadzivon/telemetrics-back/internal/adapters/inbound/http"
-	"github.com/redis/go-redis/v9"
+	sm "github.com/YurcheuskiRadzivon/telemetrics-back/internal/infrastructure/session-manager"
 
 	"github.com/YurcheuskiRadzivon/telemetrics-back/pkg/generator"
 	"github.com/YurcheuskiRadzivon/telemetrics-back/pkg/httpserver"
@@ -18,25 +16,13 @@ import (
 
 func Run(cfg *config.Config) {
 	lgr := logger.NewLogger()
-	lgr.InfoLogger.Println(cfg.App.Name)
 
-	gnrtr := generator.Generator{}
-	lgr.DebugLogger.Println(gnrtr.NewSessionID())
+	gnrt := &generator.Generator{}
 
-	Opt, err := redis.ParseURL(cfg.REDIS.URL)
-	if err != nil {
-		lgr.ErrorLogger.Fatalf("parse Redis options error: %w", err)
-	}
-
-	redisClient := redis.NewClient(Opt)
-	info, err := redisClient.Info(context.Background()).Result()
-	if err != nil {
-		lgr.ErrorLogger.Fatalf("get Redis info error: %w", err)
-	}
-	fmt.Println(info)
+	sm := sm.New()
 
 	httpServer := httpserver.New(httpserver.Port(cfg.HTTP.Port), httpserver.Prefork(cfg.HTTP.UsePreforkMode))
-	http.NewRouter(httpServer.App, cfg, lgr)
+	http.NewRouter(httpServer.App, gnrt, sm, cfg, lgr)
 
 	httpServer.Start()
 
@@ -47,12 +33,12 @@ func Run(cfg *config.Config) {
 	case s := <-interrupt:
 		lgr.InfoLogger.Printf("app - Run - signal: %s", s.String())
 	case err := <-httpServer.Notify():
-		lgr.ErrorLogger.Printf("app - Run - httpServer.Notify: %w", err)
+		lgr.ErrorLogger.Printf("app - Run - httpServer.Notify: %v", err)
 	}
 
-	err = httpServer.Shutdown()
+	err := httpServer.Shutdown()
 	if err != nil {
-		lgr.ErrorLogger.Printf("app - Run - httpServer.Shutdown: %w", err)
+		lgr.ErrorLogger.Printf("app - Run - httpServer.Shutdown: %v", err)
 	}
 
 }
