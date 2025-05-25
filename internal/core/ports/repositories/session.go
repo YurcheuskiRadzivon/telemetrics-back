@@ -5,7 +5,7 @@ import (
 )
 
 type SessionRepository interface {
-	SaveSession(ctx context.Context, session []byte) (string, error)
-	GetSession(ctx context.Context, sessionID string) ([]byte, error)
-	DeleteSession(ctx context.Context, sessionID string) error
+	LoadSession(ctx context.Context) ([]byte, error)
+	StoreSession(ctx context.Context, session []byte) error
+	DeleteSession(ctx context.Context) error
 }

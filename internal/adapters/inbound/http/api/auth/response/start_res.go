@@ -1,11 +1,10 @@
 package response
 
 const (
-	StatusCodeRequested  = "CODE_REQUESTED"
-	StatusInvalidRequest = "INVALID_REQUEST"
+	StatusCodeRequested = "CODE_REQUESTED"
 )
 
 type StartResponse struct {
-	SessionID string `json:"session_id"`
-	Status    string `json:"status`
+	ManageSessionID string `json:"session_id"`
+	Status          string `json:"status`
 }

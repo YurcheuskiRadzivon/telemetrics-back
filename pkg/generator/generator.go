@@ -11,3 +11,7 @@ type Generator struct{}
 func (g *Generator) NewSessionID() string {
 	return uuid.New().String()
 }
+
+func (g *Generator) NewManageSessionID() string {
+	return uuid.New().String()
+}

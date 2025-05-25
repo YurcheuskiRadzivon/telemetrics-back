@@ -13,6 +13,7 @@ type (
 		PG    PG
 		REDIS REDIS
 		TG    TG
+		JWT   JWT
 	}
 
 	// App -.
@@ -41,6 +42,11 @@ type (
 	TG struct {
 		APP_ID   int    `env:"APP_ID,required"`
 		APP_HASH string `env:"APP_HASH,required"`
+	}
+
+	//JWT
+	JWT struct {
+		SECRET_KEY string `env:"SECRET_KEY,required"`
 	}
 )
 

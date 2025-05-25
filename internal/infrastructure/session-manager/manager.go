@@ -4,54 +4,65 @@ import (
 	"sync"
 )
 
-type AuthSession struct {
-	SessionID    string
-	Phone        string
-	CodeChan     chan string
-	PasswordChan chan string
+type AuthData struct {
+	SessionID string
+	UserID    string
+}
+
+type ManageSession struct {
+	ManageSessionID string
+	Phone           string
+	CodeChan        chan string
+	PasswordChan    chan string
+	ErrorChan       chan error
+	AuthDataChan    chan AuthData
 }
 
 type SessionManager struct {
-	sessions map[string]*AuthSession
-	mu       sync.Mutex
+	manageSessions map[string]*ManageSession
+	mu             sync.Mutex
 }
 
 func New() *SessionManager {
 	return &SessionManager{
-		sessions: make(map[string]*AuthSession),
+		manageSessions: make(map[string]*ManageSession),
 	}
 }
 
-func (sm *SessionManager) CreateSession(phone, sessionID string) *AuthSession {
+func (sm *SessionManager) CreateSession(phone, manageSessionID string) *ManageSession {
 	codeChan := make(chan string, 1)
 	passwordChan := make(chan string, 1)
+	errorChan := make(chan error, 1)
+	AuthDataChan := make(chan AuthData, 1)
 
-	session := &AuthSession{
-		SessionID:    sessionID,
-		Phone:        phone,
-		CodeChan:     codeChan,
-		PasswordChan: passwordChan,
+	manageSession := &ManageSession{
+		ManageSessionID: manageSessionID,
+		Phone:           phone,
+		CodeChan:        codeChan,
+		PasswordChan:    passwordChan,
+		ErrorChan:       errorChan,
+		AuthDataChan:    AuthDataChan,
 	}
 
 	sm.mu.Lock()
-	sm.sessions[sessionID] = session
+	sm.manageSessions[manageSessionID] = manageSession
 	sm.mu.Unlock()
 
-	return session
+	return manageSession
 }
 
-func (sm *SessionManager) GetSession(sessionID string) (*AuthSession, bool) {
+func (sm *SessionManager) GetSession(manageSessionID string) (*ManageSession, bool) {
 	sm.mu.Lock()
 	defer sm.mu.Unlock()
 
-	session, ok := sm.sessions[sessionID]
+	manageSession, ok := sm.manageSessions[manageSessionID]
 
-	return session, ok
+	return manageSession, ok
 }
 
-func (sm *SessionManager) DeleteSession(sessionID string) {
+func (sm *SessionManager) DeleteSession(manageSessionID string) {
 	sm.mu.Lock()
 	defer sm.mu.Unlock()
 
-	delete(sm.sessions, sessionID)
+	delete(sm.manageSessions, manageSessionID)
 }

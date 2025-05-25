@@ -1,26 +1,34 @@
 package telegram
 
 import (
+	"github.com/YurcheuskiRadzivon/telemetrics-back/internal/adapters/outbound/repositories"
+	"github.com/YurcheuskiRadzivon/telemetrics-back/pkg/generator"
+	"github.com/YurcheuskiRadzivon/telemetrics-back/pkg/logger"
 	"github.com/gotd/td/telegram"
 )
 
-type Client struct {
-	Tgc *telegram.Client
+type TelegramClient struct {
+	Client *telegram.Client
+	lgr    *logger.Logger
+	gnrt   *generator.Generator
+	sr     *repositories.SessionRepository
 }
 
-func New(sessionStoragePath string, appID int, appHash string) (*Client, error) {
-	c := &Client{}
+func New(appID int, appHash string, lgr *logger.Logger, gnrt *generator.Generator, sr *repositories.SessionRepository) *TelegramClient {
+	c := &TelegramClient{
+		lgr:  lgr,
+		gnrt: gnrt,
+		sr:   sr,
+	}
 
 	opt := telegram.Options{
-		SessionStorage: &telegram.FileSessionStorage{
-			Path: sessionStoragePath,
-		},
+		SessionStorage: sr,
 		Device: telegram.DeviceConfig{
 			DeviceModel: "TeleMD",
 		},
 	}
 
-	c.Tgc = telegram.NewClient(appID, appHash, opt)
+	c.Client = telegram.NewClient(appID, appHash, opt)
 
-	return c, nil
+	return c
 }

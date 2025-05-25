@@ -9,16 +9,16 @@ import (
 )
 
 type CustomAuthenticator struct {
-	Session *sm.AuthSession
+	ManageSession *sm.ManageSession
 }
 
 func (a CustomAuthenticator) Phone(ctx context.Context) (string, error) {
-	return a.Session.Phone, nil
+	return a.ManageSession.Phone, nil
 }
 
 func (a CustomAuthenticator) Password(ctx context.Context) (string, error) {
 	select {
-	case pass := <-a.Session.PasswordChan:
+	case pass := <-a.ManageSession.PasswordChan:
 		return pass, nil
 	case <-ctx.Done():
 		return "", ctx.Err()
@@ -27,7 +27,7 @@ func (a CustomAuthenticator) Password(ctx context.Context) (string, error) {
 
 func (a CustomAuthenticator) Code(ctx context.Context, sentCode *tg.AuthSentCode) (string, error) {
 	select {
-	case code := <-a.Session.CodeChan:
+	case code := <-a.ManageSession.CodeChan:
 		return code, nil
 	case <-ctx.Done():
 		return "", ctx.Err()
