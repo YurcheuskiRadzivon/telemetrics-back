@@ -1,7 +1,6 @@
 package entity
 
 type ChannelInfo struct {
-	Name      string
-	ChannelID int
-	Date      string
+	Name      string `json:"channel_name"`
+	ChannelID int    `json:"channel_id"`
 }

@@ -15,3 +15,7 @@ func (g *Generator) NewSessionID() string {
 func (g *Generator) NewManageSessionID() string {
 	return uuid.New().String()
 }
+
+func (g *Generator) NewUserID() string {
+	return uuid.New().String()
+}

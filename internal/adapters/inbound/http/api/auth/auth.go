@@ -33,7 +33,7 @@ func (a *Auth) StartAuth(ctx *fiber.Ctx) error {
 
 	manageSessionID := a.gnrt.NewSessionID()
 
-	tg := telegram.New(a.cfg.TG.APP_ID, a.cfg.TG.APP_HASH, a.lgr, a.gnrt, a.sr)
+	tg := telegram.New(a.cfg.TG.APP_ID, a.cfg.TG.APP_HASH, a.lgr, a.gnrt, a.sr, a.us, a.vs)
 
 	manageSession := a.sm.CreateSession(req.PhoneNumber, manageSessionID)
 

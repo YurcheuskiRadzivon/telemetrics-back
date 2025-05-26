@@ -1,8 +1,7 @@
 package entity
 
 type User struct {
-	UserID      int
-	Username    string
-	PhoneNumber string
-	Session     []byte
+	UserID      string `json:"user_id"`
+	Username    string `json:"username"`
+	PhoneNumber string `json:"phone_number"`
 }

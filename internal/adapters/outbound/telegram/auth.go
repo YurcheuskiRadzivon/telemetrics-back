@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/YurcheuskiRadzivon/telemetrics-back/internal/core/entity"
 	sm "github.com/YurcheuskiRadzivon/telemetrics-back/internal/infrastructure/session-manager"
 	"github.com/YurcheuskiRadzivon/telemetrics-back/pkg/ctxutil"
 	"github.com/gotd/td/telegram/auth"
@@ -17,6 +18,8 @@ func (tg *TelegramClient) AuthProcession(flow auth.Flow, manageSession *sm.Manag
 	go func() {
 		ctx, cancel := context.WithTimeout(context.Background(), authProcessionTimeOut)
 		defer cancel()
+
+		var username, phone string
 
 		sessionID := tg.gnrt.NewSessionID()
 
@@ -36,14 +39,44 @@ func (tg *TelegramClient) AuthProcession(flow auth.Flow, manageSession *sm.Manag
 
 			tg.lgr.InfoLogger.Printf("✅ Auth successful for %s (ID: %d)\n", self.Phone, self.ID)
 
+			username, phone = self.Username, self.Phone
+
 			return nil
 		}); err != nil {
 			manageSession.ErrorChan <- err
 			tg.lgr.ErrorLogger.Printf("❌ Auth failed for %s: %v\n", manageSession.Phone, err)
 		} else {
+			userID := tg.gnrt.NewUserID()
+			if err := tg.us.CreateUser(ctx, &entity.User{
+				UserID:      userID,
+				Username:    username,
+				PhoneNumber: phone,
+			}); err != nil {
+				manageSession.ErrorChan <- err
+			}
+
+			if err := tg.vs.CreateViewOptions(ctx, &entity.ViewOptions{
+				UserID:            userID,
+				ChannelCount:      0,
+				Tittle:            false,
+				About:             false,
+				ChannelID:         false,
+				ChannelDate:       false,
+				ParticipantsCount: false,
+				Photo:             false,
+				MessageCount:      0,
+				MessageID:         false,
+				Views:             false,
+				PostDate:          false,
+				ReactionsCount:    false,
+				Reactions:         false,
+			}); err != nil {
+				manageSession.ErrorChan <- err
+			}
+
 			authData := sm.AuthData{
 				SessionID: sessionID,
-				UserID:    "",
+				UserID:    userID,
 			}
 			manageSession.AuthDataChan <- authData
 			tg.lgr.InfoLogger.Printf("✅ Auth completed for %s\n", manageSession.Phone)
