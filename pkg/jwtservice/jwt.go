@@ -33,23 +33,23 @@ func (jwts *JWTService) CreateToken(payload jwt.MapClaims) (string, error) {
 	}
 	return t, nil
 }
-func (jwts *JWTService) GetUserID(tokenString string) (int, error) {
+func (jwts *JWTService) GetUserID(tokenString string) (string, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return jwts.secretKey, nil
 	})
 
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		userID := int(claims["user_id"].(float64))
+		userID := claims["user_id"].(string)
 		return userID, nil
 	}
 
-	return 0, fmt.Errorf("invalid token")
+	return "", fmt.Errorf("invalid token")
 }
-func (jwts *JWTService) GetUserSessionID(tokenString string) (string, error) {
+func (jwts *JWTService) GetSessionID(tokenString string) (string, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return jwts.secretKey, nil
 	})

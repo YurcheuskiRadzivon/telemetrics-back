@@ -1,6 +1,6 @@
 package entity
 
 type Emoji struct {
-	Str   rune
+	Str   string
 	Count int
 }

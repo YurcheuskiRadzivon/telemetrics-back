@@ -41,6 +41,16 @@ func NewApiRoutes(
 
 	manageGroup := api.Group("/manage")
 	{
-		manage.NewManageRoutes(manageGroup)
+		manage.NewManageRoutes(
+			manageGroup,
+			gnrt,
+			sm,
+			cfg,
+			lgr,
+			sr,
+			jwts,
+			us,
+			vs,
+		)
 	}
 }
